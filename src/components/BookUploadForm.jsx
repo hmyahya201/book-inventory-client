@@ -1,80 +1,158 @@
-import React from "react";
+import React, { useState } from "react";
 
 const BookUploadForm = () => {
-  return (
-    <div className="p-3 bg-light">
-      <form class="row g-3">
-        <div class="col-md-6">
-          <label for="inputEmail4" class="form-label">
-            Email
-          </label>
-          <input type="email" class="form-control" id="inputEmail4" />
-        </div>
-        <div class="col-md-6">
-          <label for="inputPassword4" class="form-label">
-            Password
-          </label>
-          <input type="password" class="form-control" id="inputPassword4" />
-        </div>
-        <div class="col-12">
-          <label for="inputAddress" class="form-label">
-            Address
-          </label>
+   const bookCategories = [
+      "Select You Book Category",
+      "Fiction",
+      "Non-fiction",
+      "Mystery",
+      "Programming",
+      "Science fiction",
+      "Fantasy",
+      "Horror",
+      "Biography",
+      "Autobiography",
+      "History",
+      "Self-help",
+      "Business",
+      "Memoir",
+      "Poetry",
+      "Children's books",
+      "Travel",
+      "Religion and spirituality",
+      "Science",
+      "Art and design",
+   ];
+   const {selectedBookCategory, setSelectedBookCategory} = useState(bookCategories[0])
+   const handleOnChangeCategory = (event)=>{
+      setSelectedBookCategory(event.target.value)
+   }
+
+  
+
+   const handleSubmit = (event) => {
+      event.preventDefault();
+      const form = event.target;
+
+      const bookName = form.bookName.value;
+      const authorName = form.authorName.value;
+      const imageUrl = form.imageUrl.value;
+      const categoryName = form.categoryName.value;
+      const metaTextDescription = form.metaTextDescription.value;
+      const bookPdfUrl = form.bookPDF.value;
+
+      const bookInfo = {
+         bookName,
+         authorName,
+         imageUrl,
+         categoryName,
+         metaTextDescription,
+         bookPdfUrl,
+      };
+     fetch('http://localhost:4000/upload-book', {
+      method: "POST",
+      headers: {
+         "content-type": "application/json"
+      },
+      body: JSON.stringify(bookInfo)
+     })
+     .then(res=>res.json())
+     .then(data=>{
+         if(data.insertedId){
+            console.log("data", data)
+            alert("your book uploaded successfully")
+         }else{
+            return alert("something wrong")
+         }
+     })
+   };
+   return (
+      <div className="p-3 bg-light">
+      <form
+        className="row g-3"
+        onSubmit={handleSubmit}>
+        <div className="col-md-6">
+          <label htmlFor="bookName" className="form-label">Book Name</label>
           <input
-            type="text"
-            class="form-control"
-            id="inputAddress"
-            placeholder="1234 Main St"
+            type="name"
+            name="bookName"
+            className="form-control"
+            id="bookName"
           />
         </div>
-        <div class="col-12">
-          <label for="inputAddress2" class="form-label">
-            Address 2
+        <div className="col-md-6">
+          <label htmlFor="authorName" className="form-label">
+            Author Name
           </label>
           <input
-            type="text"
-            class="form-control"
-            id="inputAddress2"
-            placeholder="Apartment, studio, or floor"
+            type="name"
+            name="authorName"
+            className="form-control"
+            id="authorName"
           />
         </div>
-        <div class="col-md-6">
-          <label for="inputCity" class="form-label">
-            City
+        <div className="col-12">
+          <label htmlFor="imageUrl" className="form-label">
+            Book Image URL
           </label>
-          <input type="text" class="form-control" id="inputCity" />
+          <input
+            type="url"
+            name="imageUrl"
+            className="form-control"
+            id="imageUrl"
+          />
         </div>
-        <div class="col-md-4">
-          <label for="inputState" class="form-label">
-            State
+
+        <div className="col-md-4">
+          <label htmlFor="category" className="form-label">
+            Category
           </label>
-          <select id="inputState" class="form-select">
-            <option selected>Choose...</option>
-            <option>...</option>
+          <select
+            id="category"
+            name="categoryName"
+            className="form-select"
+            value = {selectedBookCategory}
+            onChange={handleOnChangeCategory}
+          >
+            {bookCategories.map((category) => (
+              <option key={category} value={category}>
+                {category}
+              </option>
+            ))}
           </select>
         </div>
-        <div class="col-md-2">
-          <label for="inputZip" class="form-label">
-            Zip
+        <div className="col-md-8">
+          <label htmlFor="metaTextDescription" className="form-label">
+            Meta description
           </label>
-          <input type="text" class="form-control" id="inputZip" />
+          <textarea
+            type="text"
+            className="form-control"
+            name="metaTextDescription"
+            id="metaTextDescription"
+          />
         </div>
-        <div class="col-12">
-          <div class="form-check">
-            <input class="form-check-input" type="checkbox" id="gridCheck" />
-            <label class="form-check-label" for="gridCheck">
-              Check me out
+        <div className="col-12">
+          <div class="mb-3">
+            <label for="formFile" class="form-label">
+              Insert pdf link of the book
             </label>
+            <input
+              name="bookPDF"
+              class="form-control"
+              type="url"
+              id="formFile"
+            />
           </div>
         </div>
-        <div class="col-12">
-          <button type="submit" class="btn btn-primary">
-            Sign in
+        <div className="col-12">
+          <button type="submit" className="btn btn-primary">
+            Upload book
           </button>
         </div>
       </form>
     </div>
-  );
+   );
 };
 
 export default BookUploadForm;
