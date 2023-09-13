@@ -38,16 +38,16 @@ const BookUploadForm = () => {
       const authorName = form.authorName.value;
       const imageUrl = form.imageUrl.value;
       const categoryName = form.categoryName.value;
-      const metaTextDescription = form.metaTextDescription.value;
-      const bookPdfUrl = form.bookPDF.value;
+      const metaDescription = form.metaDescription.value;
+      const bookPdfurl = form.bookPDF.value;
 
       const bookInfo = {
          bookName,
          authorName,
          imageUrl,
          categoryName,
-         metaTextDescription,
-         bookPdfUrl,
+         metaDescription,
+         bookPdfurl,
       };
      fetch('http://localhost:4000/upload-book', {
       method: "POST",
@@ -61,6 +61,7 @@ const BookUploadForm = () => {
          if(data.insertedId){
             console.log("data", data)
             alert("your book uploaded successfully")
+            form.reset()
          }else{
             return alert("something wrong")
          }
@@ -122,13 +123,13 @@ const BookUploadForm = () => {
           </select>
         </div>
         <div className="col-md-8">
-          <label htmlFor="metaTextDescription" className="form-label">
+          <label htmlFor="metaDescription" className="form-label">
             Meta description
           </label>
           <textarea
             type="text"
             className="form-control"
-            name="metaTextDescription"
+            name="metaDescription"
             id="metaTextDescription"
           />
         </div>
